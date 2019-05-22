@@ -1,21 +1,24 @@
 let masterTodoList = []
 
+const todoList = () => document.getElementById('todoList')
+const todoBody = () => document.getElementById('todoBody')
+
 const renderTodoList = () => {
   let html = ''
-  masterTodoList.map((todo, idx) => {
+  masterTodoList.map(({ body, isDone }, idx) => {
     const node = html += `
-      <li id="todoItem-${idx}" style="text-decoration: ${todo.isDone ? 'line-through' : 'none'}">
-        <a href="#" onclick="toggleTodoListItem(${idx})" style="margin-right: 15px">${todo.isDone ? 'Untoggle' : 'Toggle'}</a> 
+      <li style="text-decoration: ${isDone ? 'line-through' : 'none'}">
+        <a href="#" onclick="toggleTodoListItem(${idx})" style="margin-right: 15px">${isDone ? 'Untoggle' : 'Toggle'}</a> 
         <a href="#" onclick="removeTodoItem(${idx})" style="margin-right: 15px">x</a>
-        ${todo.body} 
+        ${body} 
       </li>
     `
-    document.getElementById('todoList').innerHTML = node
+    todoList().innerHTML = node
   })
 }
 
 const addTodo = () => {
-  const body = document.getElementById('todoBody').value
+  const body = todoBody().value
   const newTodoItem = {
     body,
     isDone: false,
@@ -23,21 +26,21 @@ const addTodo = () => {
   }
 
   masterTodoList.push(newTodoItem)
-  document.getElementById('todoBody').value =''
+  todoBody().value = ''
   renderTodoList()
 }
 
 const removeTodoItem = selectedTodoIdx => {
   masterTodoList = masterTodoList.filter((_, idx) => idx !== selectedTodoIdx)
-  if (masterTodoList.length === 0) document.getElementById('todoList').innerHTML = ''
+  if (masterTodoList.length === 0) todoList().innerHTML = ''
   renderTodoList()
 }
 
 const toggleTodoListItem = selectedTodoIdx => {
-  const oldTodoItem = masterTodoList[selectedTodoIdx]
+  const toggledTodoItem = masterTodoList[selectedTodoIdx]
   const newTodoItem = {
-    ...oldTodoItem,
-    isDone: !oldTodoItem.isDone,
+    ...toggledTodoItem,
+    isDone: !toggledTodoItem.isDone,
   }
 
   masterTodoList[selectedTodoIdx] = newTodoItem
