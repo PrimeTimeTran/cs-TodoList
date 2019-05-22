@@ -1,11 +1,12 @@
-let masterTodoList = []
-
-const todoList = () => document.getElementById('todoList')
 const todoBody = () => document.getElementById('todoBody')
+const todoListUI = () => document.getElementById('todoList')
+const masterTodoList = () => JSON.parse(localStorage.getItem('todoList'))
+const saveTodoList = todoList => localStorage.setItem('todoList', JSON.stringify(todoList))
 
 const renderTodoList = () => {
+  const todoList = masterTodoList()
   let html = ''
-  masterTodoList.map(({ body, isDone }, idx) => {
+  todoList.map(({ body, isDone }, idx) => {
     const node = html += `
       <li style="text-decoration: ${isDone ? 'line-through' : 'none'}">
         <a href="#" onclick="toggleTodoListItem(${idx})" style="margin-right: 15px">${isDone ? 'Untoggle' : 'Toggle'}</a> 
@@ -13,36 +14,45 @@ const renderTodoList = () => {
         ${body} 
       </li>
     `
-    todoList().innerHTML = node
+    todoListUI().innerHTML = node
   })
 }
 
 const addTodo = () => {
   const body = todoBody().value
-  const newTodoItem = {
+  const todoItem = {
     body,
     isDone: false,
     createdAt: new Date(),
   }
 
-  masterTodoList.push(newTodoItem)
+  const todoList = masterTodoList() || []
+  todoList.push(todoItem)
+
+  saveTodoList(todoList)
   todoBody().value = ''
   renderTodoList()
 }
 
 const removeTodoItem = selectedTodoIdx => {
-  masterTodoList = masterTodoList.filter((_, idx) => idx !== selectedTodoIdx)
-  if (masterTodoList.length === 0) todoList().innerHTML = ''
+  let todoList = masterTodoList()
+  todoList = todoList.filter((_, idx) => idx !== selectedTodoIdx)
+  if (todoList.length === 0) todoListUI().innerHTML = ''
+  saveTodoList(todoList)
   renderTodoList()
 }
 
 const toggleTodoListItem = selectedTodoIdx => {
-  const toggledTodoItem = masterTodoList[selectedTodoIdx]
+  const todoList = masterTodoList()
+  const toggledTodoItem = todoList[selectedTodoIdx]
   const newTodoItem = {
     ...toggledTodoItem,
     isDone: !toggledTodoItem.isDone,
   }
 
-  masterTodoList[selectedTodoIdx] = newTodoItem
+  todoList[selectedTodoIdx] = newTodoItem
+  saveTodoList(todoList)
   renderTodoList()
 }
+
+renderTodoList()
