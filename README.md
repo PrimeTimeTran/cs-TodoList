@@ -1,4 +1,4 @@
-# CoderSchool FTW - WeDo
+# CoderSchool FTW - Developer Dos
 
 Created with love by: Loi Tran
   

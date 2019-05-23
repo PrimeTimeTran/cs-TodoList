@@ -1,58 +1,57 @@
-const todoBody = () => document.getElementById('todoBody')
-const todoListUI = () => document.getElementById('todoList')
-const masterTodoList = () => JSON.parse(localStorage.getItem('todoList'))
+const docTodoBody = () => document.getElementById('todoBody')
+const docTodoList = () => document.getElementById('todoList')
+const masterTodoList = () => JSON.parse(localStorage.getItem('todoList')) || []
+
 const saveTodoList = todoList => localStorage.setItem('todoList', JSON.stringify(todoList))
 
+const renderTodoItem = ({ isDone, body }, idx) => {
+	return `
+		<li style="text-decoration: ${isDone ? 'line-through' : 'none'}">
+			<a href="#" onclick="toggleTodoItem(${idx})" style="margin-right: 15px">${isDone ? 'Untoggle' : 'Toggle'}</a> 
+			<a href="#" onclick="removeTodoItem(${idx})" style="margin-right: 15px">x</a>
+			${body} 
+		</li>
+	`
+}
+
 const renderTodoList = () => {
-  const todoList = masterTodoList()
-  let html = ''
-  todoList.map(({ body, isDone }, idx) => {
-    const node = html += `
-      <li style="text-decoration: ${isDone ? 'line-through' : 'none'}">
-        <a href="#" onclick="toggleTodoListItem(${idx})" style="margin-right: 15px">${isDone ? 'Untoggle' : 'Toggle'}</a> 
-        <a href="#" onclick="removeTodoItem(${idx})" style="margin-right: 15px">x</a>
-        ${body} 
-      </li>
-    `
-    todoListUI().innerHTML = node
-  })
+	const todoList = masterTodoList()
+	const todoHTML = todoList.map(renderTodoItem)
+	document.getElementById('todoList').innerHTML = todoHTML.join('\n')
+}
+
+const saveTodoListAndRender = todoList => {
+	saveTodoList(todoList)
+	renderTodoList()
 }
 
 const addTodo = () => {
-  const body = todoBody().value
-  const todoItem = {
-    body,
-    isDone: false,
-    createdAt: new Date(),
-  }
+	const body = docTodoBody().value
+	const todoItem = {
+		body,
+		isDone: false,
+		createdAt: new Date(),
+	}
 
-  const todoList = masterTodoList() || []
-  todoList.push(todoItem)
-
-  saveTodoList(todoList)
-  todoBody().value = ''
-  renderTodoList()
+	const todoList = masterTodoList()
+	todoList.push(todoItem)
+	saveTodoListAndRender(todoList)
+	docTodoBody().value = ''
 }
 
 const removeTodoItem = selectedTodoIdx => {
-  let todoList = masterTodoList()
-  todoList = todoList.filter((_, idx) => idx !== selectedTodoIdx)
-  if (todoList.length === 0) todoListUI().innerHTML = ''
-  saveTodoList(todoList)
-  renderTodoList()
+	let todoList = masterTodoList()
+
+	todoList = todoList.filter((_, idx) => idx !== selectedTodoIdx)
+
+	if (todoList.length === 0) docTodoList().innerHTML = ''
+	saveTodoListAndRender(todoList)
 }
 
-const toggleTodoListItem = selectedTodoIdx => {
-  const todoList = masterTodoList()
-  const toggledTodoItem = todoList[selectedTodoIdx]
-  const newTodoItem = {
-    ...toggledTodoItem,
-    isDone: !toggledTodoItem.isDone,
-  }
-
-  todoList[selectedTodoIdx] = newTodoItem
-  saveTodoList(todoList)
-  renderTodoList()
+const toggleTodoItem = selectedTodoIdx => {
+	const todoList = masterTodoList()
+	todoList[selectedTodoIdx].isDone = !todoList[selectedTodoIdx].isDone
+	saveTodoListAndRender(todoList)
 }
 
 renderTodoList()
