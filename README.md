@@ -4,6 +4,9 @@ Created with love by: Loi Tran
   
 A fun todo list app using HTML, CSS, Bootstrap, and JS.
 
+## Try it out
+Demo online at [this link.](https://happy-bartik-c74fa2.netlify.com/)
+
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories.
@@ -19,7 +22,7 @@ To create a GIF, use [LiceCap](http://www.cockos.com/licecap/), [RecordIt](http:
 The following **required** functionalities are completed (this is a sample):
 
 * [x] User can type in a todo input field.
-* [x] User can click a button the todo to their todo list.
+* [x] User can click a button to add a todo to their todo list.
 * [x] User can click a button to remove a todo from their todo list.
 * [x] User can click a button to toggle a todo as either complete or incomplete.
 * [x] User can see when todo was created.
@@ -49,7 +52,7 @@ Describe any challenges encountered while building the app.
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [2019] [Loi Tran]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

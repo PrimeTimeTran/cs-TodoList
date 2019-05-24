@@ -2,7 +2,7 @@ const docTodoBody = () => document.getElementById('todoBody')
 const docTodoList = () => document.getElementById('todoList')
 const masterTodoList = () => JSON.parse(localStorage.getItem('todoList')) || []
 
-const saveTodoList = todoList => localStorage.setItem('todoList', JSON.stringify(todoList))
+const saveToLocalStorage = todoList => localStorage.setItem('todoList', JSON.stringify(todoList))
 
 const renderTodoItem = ({ isDone, body }, idx) => {
 	return `
@@ -20,22 +20,21 @@ const renderTodoList = () => {
 	document.getElementById('todoList').innerHTML = todoHTML.join('\n')
 }
 
-const saveTodoListAndRender = todoList => {
-	saveTodoList(todoList)
+const saveTodoList = todoList => {
+	saveToLocalStorage(todoList)
 	renderTodoList()
 }
 
 const addTodo = () => {
-	const body = docTodoBody().value
 	const todoItem = {
-		body,
 		isDone: false,
 		createdAt: new Date(),
+		body: docTodoBody().value,
 	}
 
 	const todoList = masterTodoList()
 	todoList.push(todoItem)
-	saveTodoListAndRender(todoList)
+	saveTodoList(todoList)
 	docTodoBody().value = ''
 }
 
@@ -45,13 +44,13 @@ const removeTodoItem = selectedTodoIdx => {
 	todoList = todoList.filter((_, idx) => idx !== selectedTodoIdx)
 
 	if (todoList.length === 0) docTodoList().innerHTML = ''
-	saveTodoListAndRender(todoList)
+	saveTodoList(todoList)
 }
 
 const toggleTodoItem = selectedTodoIdx => {
 	const todoList = masterTodoList()
 	todoList[selectedTodoIdx].isDone = !todoList[selectedTodoIdx].isDone
-	saveTodoListAndRender(todoList)
+	saveTodoList(todoList)
 }
 
 renderTodoList()
